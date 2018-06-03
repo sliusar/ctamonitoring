@@ -1,18 +1,27 @@
+This repositoy contains tools for performing the monitoring of the Cherenkov 
+Telescope Array (CTA) instruments.
+It is based in the Alma Common Software (ACS), 
+a CORBA-based Container/Component framework. 
+
+The repositoru cintains the property recorder package.  
+The Property Recorder is a python tool that allows to scan an ACS deployment,
+identify the components, their properties and create monitors on these
+properties. These monitors will transfer the monitored measurements to
+a backend that will take care of storing the data.
+I works with the three ACS implementation language components.
+The property recorder can operate in two modes: as a simple client application or 
+as an ACS component.
+
 Dependencies:
 
 
 The project has some dependencies on external Python packages.
-The following modules need to be added (developers use "pip" for that purpose)
-
-
-wget https://bootstrap.pypa.io/get-pip.py 
-python get-pip.py --user 
-PATH=$PATH:~/.local/bin
+The following modules need to be added (e.g. using "pip" for that purpose)
 
 pip install --user enum
 pip install --user pymongo
 pip install --user mock
 
-(tested with pymongo-3.1.1)
+(tested with pymongo-3.6)
 (enum Version: 0.4.6)
-(mock version 1.3)
+(mock version 2.0.0)
