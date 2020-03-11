@@ -116,6 +116,10 @@ class FrontEnd(object):
 
         self._setup_backend()
 
+        if self.recorder_config.autostart:
+            self.logger.logWarning("Starting recording automatically")
+            self.start_recording()
+
         self._start_watchdog()
 
         self._is_acs_client_ok = True

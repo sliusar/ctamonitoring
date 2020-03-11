@@ -254,6 +254,14 @@ class RecorderConfigDecoder(object):
             raise BadCdbRecorderConfig(e, "is_include")
 
         try:
+            if componentCDB.firstChild.getAttribute("autostart") == 'true':
+                recorder_config.autostart = True
+            else:
+                recorder_config.autostart = False
+        except Exception as e:
+            pass
+
+        try:
             componentCDB.firstChild.getAttribute(
                 "component_list")
             recorder_config.set_components(set(
