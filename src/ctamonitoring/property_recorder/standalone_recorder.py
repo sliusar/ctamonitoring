@@ -348,6 +348,7 @@ class RecorderParser(object):
             recorder_config.is_include_mode = self._args['is_include_mode']
         if 'component_list' in self._args:
             recorder_config.set_components(self._args['component_list'])
+        recorder_config.autostart = False # in standalone mode recording start automatically anyway
 
         return recorder_config
 
