@@ -423,6 +423,7 @@ class Registry(ctamonitoring.property_recorder.backend.dummy.registry.Registry):
         @type log: logging.Logger
         """
         super(Registry, self).__init__(log, *args, **kwargs)
+        self._log = log
         if not self._log:
             self._log = getLogger(defaultname)
         self._log.debug("creating a mongodb registry")
