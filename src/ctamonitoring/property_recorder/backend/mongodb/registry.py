@@ -158,7 +158,7 @@ class Buffer(ctamonitoring.property_recorder.backend.dummy.registry.Buffer):
     def __init__(self, log, fifo, chunk_size,
                  property_id, log_id, log_col,
                  component_name, property_name,
-                 disable):
+                 disable, skip_unchanged):
         """
         ctor.
 
@@ -188,10 +188,14 @@ class Buffer(ctamonitoring.property_recorder.backend.dummy.registry.Buffer):
         but isn't actually monitored. This will only allow for calling
         Buffer.close().
         @type disable: boolean
+        @param skip_unchanged: Skip recording of multiple values within one chunk, if
+        the values are the same. Optional, default is False
+        @type skip_unchanged: boolean
         """
         log.debug("creating buffer %s/%s" % (component_name, property_name))
         super(Buffer, self).__init__()
         self._log = log
+        self._skip_unchanged = skip_unchanged
         self._fifo = fifo
         self._chunk_size = chunk_size
         self._property_id = property_id
@@ -203,6 +207,7 @@ class Buffer(ctamonitoring.property_recorder.backend.dummy.registry.Buffer):
         self._bin_begin = None
         self._doc = None
         self._canceled = False  # keep this the last line in ctor
+        self._value = None
 
     def add(self, tm, dt):
         """
@@ -222,6 +227,7 @@ class Buffer(ctamonitoring.property_recorder.backend.dummy.registry.Buffer):
             if self._bin_begin is not None and bin_begin != self._bin_begin:
                 if self._doc and self._doc["end"] is not None:
                     self._fifo.add(self._doc)
+                    self._value = None # flush the current value, so that next chunk includes a value again, if add(...) is called in the meanwhile
                 self._bin_begin = None
                 self._doc = None
             if self._bin_begin is None:
@@ -229,7 +235,13 @@ class Buffer(ctamonitoring.property_recorder.backend.dummy.registry.Buffer):
                 self._doc = {"begin": t, "end": None,
                              "values": [],
                              "bin": bin_begin, "pid": self._property_id}
-            self._doc["values"].append({"t": t, "val": dt})
+            is_changed = (self._value is None) or (self._value != dt)
+            if not self._skip_unchanged or is_changed:
+                self._value = dt
+                self._doc["values"].append({"t": t, "val": dt})
+            else:
+                self._log.debug("skipping %s/%s, new value is unchanged, value: %s" %
+                        (self._component_name, self._property_name, str(dt)))
             self._doc["end"] = t
         else:
             self._log.warn("property monitoring for %s/%s is disabled" %
@@ -357,6 +369,7 @@ class Registry(ctamonitoring.property_recorder.backend.dummy.registry.Registry):
                  properties="properties",
                  chunks="chunks",
                  uri="mongodb://localhost",
+                 skip_unchanged=False,
                  chunk_size=timedelta(seconds=60),
                  fifo_size=1000,
                  n_workers=1,
@@ -383,6 +396,9 @@ class Registry(ctamonitoring.property_recorder.backend.dummy.registry.Registry):
         @type chunks: string
         @param uri: mongodb URI. Optional, default is "mongodb://localhost".
         @type uri: string
+        @param skip_unchanged: Skip recording of multiple values within one chunk, if
+        the values are the same. Optional, default is False
+        @type skip_unchanged: boolean
         @param chunk_size: Specifies the time duration within monitoring data
         is safed into a chunk (fraction of seconds will be ignored).
         Optional, default is 1 minute.
@@ -407,6 +423,7 @@ class Registry(ctamonitoring.property_recorder.backend.dummy.registry.Registry):
         @type log: logging.Logger
         """
         super(Registry, self).__init__(log, *args, **kwargs)
+        self._log = log
         if not self._log:
             self._log = getLogger(defaultname)
         self._log.debug("creating a mongodb registry")
@@ -415,6 +432,7 @@ class Registry(ctamonitoring.property_recorder.backend.dummy.registry.Registry):
         self._properties_name = properties
         self._chunks_name = chunks
         self._uri = uri
+        self._skip_unchanged = skip_unchanged
         if isinstance(chunk_size, timedelta):
             self._chunk_size = chunk_size
         else:
@@ -532,7 +550,7 @@ class Registry(ctamonitoring.property_recorder.backend.dummy.registry.Registry):
         return Buffer(self._log, self._fifo, self._chunk_size,
                       property_id, log_id, self._logs,
                       component_name, property_name,
-                      disable)
+                      disable, self._skip_unchanged)
 
     def __del__(self):
         """dtor."""
