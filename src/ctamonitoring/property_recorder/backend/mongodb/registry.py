@@ -240,9 +240,9 @@ class Buffer(ctamonitoring.property_recorder.backend.dummy.registry.Buffer):
                 self._value = dt
                 self._doc["values"].append({"t": t, "val": dt})
             else:
-               # self._log.debug("skipping %s/%s, new value is unchanged, value: %s" %
-               #         (self._component_name, self._property_name, str(dt)))
-               pass
+                #self._log.debug("skipping %s/%s, new value is unchanged, value: %s" %
+                #        (self._component_name, self._property_name, str(dt)))
+                pass
             self._doc["end"] = t
         else:
             self._log.warn("property monitoring for %s/%s is disabled" %
