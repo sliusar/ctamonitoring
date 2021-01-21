@@ -220,7 +220,7 @@ class RecorderParser(object):
             '--max_comps',
             action='store',
             dest='max_comps',
-            type=long,
+            type=int,
             help='Maximum number of components to be stored in'
                  ' the recorder, no matter how many properties')
         argparser.add_argument(
@@ -234,13 +234,13 @@ class RecorderParser(object):
             '--max_props',
             action='store',
             dest='max_props',
-            type=long,
+            type=int,
             help='Maximum number of properties being monitored')
         argparser.add_argument(
             '--checking_period',
             action='store',
             dest='checking_period',
-            type=long,
+            type=int,
             help='Period in seconds to check for lost components or '
                  'new components (default 10 s)')
         argparser.add_argument(

@@ -108,7 +108,7 @@ def get_total_seconds(td, ignore_fractions_of_seconds=False):
     else:
         microseconds = float(td.microseconds)
     return (microseconds + (td.seconds +
-                            td.days*24L*3600L) * 10**6L) / 10**6L
+                            td.days*24*3600) * 10**6) / 10**6
 
 
 def get_floor(tm, td, ignore_fractions_of_seconds=True):
