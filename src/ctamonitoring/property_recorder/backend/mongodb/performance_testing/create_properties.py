@@ -64,8 +64,8 @@ def create_systems(systems_collection,
                 break
         comp_type_descriptions.append((n_comps, periods))
         props_total += n_comps * n_props
-        print len(comp_type_descriptions), n_comps, n_props, periods[:10]
-    print props_total
+        print(len(comp_type_descriptions), n_comps, n_props, periods[:10])
+    print(props_total)
 
     if not system_type:
         n_systems = 1

@@ -894,7 +894,7 @@ class ComponentWatchdog(threading.Thread):
     def stop(self):
         self._recorder_instance.logger.logDebug(
             "stopping")
-        self._Thread__stop()
+#        self._Thread__stop()
         self.sleep_event.clear()
         # I needed to add this stop because, even if a daemon, the Python
         # component logger would show errors (showing up up periodically)

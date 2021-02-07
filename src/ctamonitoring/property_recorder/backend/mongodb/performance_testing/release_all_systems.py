@@ -81,9 +81,9 @@ def main(argv=None):
         # process options
         (opts, args) = parser.parse_args(argv)
 
-        print "-" * 40
-        print "host = %s" % (opts.host,)
-        print "port = %d" % (opts.port,)
+        print("-" * 40)
+        print("host = %s" % (opts.host,))
+        print("port = %d" % (opts.port,))
 
         # connect to db server, db and collections
         client = MongoClient(opts.host, opts.port)
@@ -100,7 +100,7 @@ def main(argv=None):
                 "$set": {"lock": None, "random": random()}
             }
         )
-    except Exception, e:
+    except Exception as e:
         indent = len(program_name) * " "
         sys.stderr.write(program_name + ": " + repr(e) + "\n")
         sys.stderr.write(indent + "  for help use --help\n")

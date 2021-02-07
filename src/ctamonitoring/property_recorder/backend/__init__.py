@@ -42,6 +42,6 @@ def get_registry_class(class_or_backend_name):
                              globals(), locals(),
                              mod_and_cls[-1]),
                   mod_and_cls[-1])
-    if not isinstance(cls, (types.ClassType, types.TypeType)):
+    if not isinstance(cls, type):
         TypeError("%s is not a class." % '.'.join(mod_and_cls))
     return cls

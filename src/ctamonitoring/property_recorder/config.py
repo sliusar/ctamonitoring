@@ -131,7 +131,7 @@ class RecorderConfig(object):
 
     @max_comps.setter
     def max_comps(self, max_comps):
-        comps = long(max_comps)
+        comps = int(max_comps)
         if comps < 1:
             raise ValueError("max_comps type must be positive")
         self._max_comps = comps
@@ -148,7 +148,7 @@ class RecorderConfig(object):
 
     @max_props.setter
     def max_props(self, max_props):
-        props = long(max_props)
+        props = int(max_props)
         if props < 1:
             raise ValueError("max_props type must be positive")
         self._max_props = props
@@ -165,7 +165,7 @@ class RecorderConfig(object):
 
     @checking_period.setter
     def checking_period(self, checking_period):
-        period = long(checking_period)
+        period = int(checking_period)
         if period < 1:
             raise ValueError("checking_period checking period must be > 1 s")
         self._checking_period = period

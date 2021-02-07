@@ -100,8 +100,8 @@ class Statistics(object):
 
 
 def get_total_seconds(td):
-    return ((td.microseconds + (td.seconds + td.days * 24L * 3600L) * 10**6L) /
-            (10**6L * 1.))
+    return ((td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) /
+            (10**6 * 1.))
 
 
 def get_floor(tm, td):
@@ -243,7 +243,7 @@ def acquire_systems(sys_col, sys_locks, systems, props_col, n_props):
     lock_tm = datetime.now()
     if(systems):
         for system in systems:
-            print "locking %s" % (system,)
+            print("locking %s" % (system,))
             s = sys_col.find_and_modify(
                 {
                     "system_name": system,
@@ -263,7 +263,7 @@ def acquire_systems(sys_col, sys_locks, systems, props_col, n_props):
     elif n_props:
         n_total = 0
         while n_total < n_props:
-            print "locking system..."
+            print("locking system...")
             s = sys_col.find_and_modify(
                 {
                     "$or": [
@@ -286,7 +286,7 @@ def acquire_systems(sys_col, sys_locks, systems, props_col, n_props):
                         "system_name": s["system_name"]
                     }
                 ).count()
-                print "%s adds %d properties" % (s["system_name"], n)
+                print("%s adds %d properties" % (s["system_name"], n))
             else:
                 sys_locks.append({"name": None, "tm": lock_tm})
                 n = props_col.find(
@@ -297,7 +297,7 @@ def acquire_systems(sys_col, sys_locks, systems, props_col, n_props):
                         ]
                     }
                 ).count()
-                print "independent components add %d properties" % (n,)
+                print("independent components add %d properties" % (n,))
             n_total += n
 
 
@@ -360,7 +360,7 @@ def release_systems(sys_col, sys_locks):
     sys_not_locked = []
     for sys_lock in sys_locks:
         if sys_lock["name"] is not None:
-            print "releasing %s" % (sys_lock["name"],)
+            print("releasing %s" % (sys_lock["name"],))
             s = sys_col.find_and_modify(
                 {
                     "system_name": sys_lock["name"],
@@ -374,7 +374,7 @@ def release_systems(sys_col, sys_locks):
                 }
             )
         else:
-            print "releasing independent components"
+            print("releasing independent components")
             s = sys_col.find_and_modify(
                 {
                     "$or": [
@@ -459,18 +459,18 @@ def main(argv=None):
         end = opts.begin + timedelta(days=opts.days)
         chunk_size = timedelta(seconds=opts.chunk_size)
 
-        print "-" * 40
-        print "host = %s" % (opts.host,)
-        print "port = %d" % (opts.port,)
+        print("-" * 40)
+        print("host = %s" % (opts.host,))
+        print("port = %d" % (opts.port,))
         if opts.systems:
-            print "systems = %s" % (", ".join(opts.systems),)
+            print("systems = %s" % (", ".join(opts.systems),))
         else:
-            print "nprops = %d" % (opts.n_props,)
-        print "begin = %s" % (str(opts.begin),)
-        print "end = %s" % (str(end),)
-        print "chunksize = %s" % (str(chunk_size),)
+            print("nprops = %d" % (opts.n_props,))
+        print("begin = %s" % (str(opts.begin),))
+        print("end = %s" % (str(end),))
+        print("chunksize = %s" % (str(chunk_size),))
         if opts.realtime:
-            print "realtime generation"
+            print("realtime generation")
 
         # connect to db server, db and collections
         client = MongoClient(opts.host, opts.port)
@@ -483,7 +483,7 @@ def main(argv=None):
         system_locks = []
         try:
             # prepare data creation
-            print "-" * 40
+            print("-" * 40)
             acquire_systems(systems_collection, system_locks,
                             opts.systems, properties_collection, opts.n_props)
             properties, first_bin = acquire_properties(system_locks,
@@ -492,9 +492,9 @@ def main(argv=None):
                                                        chunks_collection,
                                                        chunk_size)
             if properties:
-                print "-" * 40
-                print "nprops = %d" % (len(properties),)
-                print "firstbin = %s" % (str(first_bin),)
+                print("-" * 40)
+                print("nprops = %d" % (len(properties),))
+                print("firstbin = %s" % (str(first_bin),))
                 bin = first_bin
                 statistics = Statistics()
                 statistics.systems = [s["name"] for s in system_locks]
@@ -549,15 +549,15 @@ def main(argv=None):
                                 if not db_inserter.is_alive():
                                     raise
                     bin += chunk_size
-                print "-" * 40
-                print "flushing..."
+                print("-" * 40)
+                print("flushing...")
                 if opts.realtime:
                     db_scheduler.flush()
                 queue.join()
         finally:
-            print "-" * 40
+            print("-" * 40)
             release_systems(systems_collection, system_locks)
-    except Exception, e:
+    except Exception as e:
         indent = len(program_name) * " "
         sys.stderr.write(program_name + ": " + repr(e) + "\n")
         sys.stderr.write(indent + "  for help use --help\n")

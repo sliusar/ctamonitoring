@@ -97,7 +97,7 @@ def get_total_seconds(td, ignore_fractions_of_seconds=False):
     """
     try:
         if ignore_fractions_of_seconds:
-            return long(td.total_seconds())
+            return int(td.total_seconds())
         else:
             return td.total_seconds()
     except AttributeError:
@@ -108,7 +108,7 @@ def get_total_seconds(td, ignore_fractions_of_seconds=False):
     else:
         microseconds = float(td.microseconds)
     return (microseconds + (td.seconds +
-                            td.days*24L*3600L) * 10**6L) / 10**6L
+                            td.days*24*3600) * 10**6) / 10**6
 
 
 def get_floor(tm, td, ignore_fractions_of_seconds=True):
@@ -176,7 +176,7 @@ def get_enum_desc_key_type(property_type_desc):
             if retVal and retVal is not basestring:
                 raise TypeError("an enum description shouldn't mix key types")
             retVal = basestring
-        elif isinstance(key, (int, long)):
+        elif isinstance(key, int):
             if retVal and retVal is not int:
                 raise TypeError("an enum description shouldn't mix key types")
             retVal = int
