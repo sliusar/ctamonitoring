@@ -253,7 +253,7 @@ class FrontEnd(object):
             self.__lock.release()
 
     def _is_id_changed(self, comp_name, comp_info):
-        if long(comp_info.managerId) != long(self.acs_client.availableComponents(comp_name)[0].h):
+        if int(comp_info.managerId) != int(self.acs_client.availableComponents(comp_name)[0].h):
             self.logger.logDebug(
                 "the component " +
                 comp_name +
@@ -660,14 +660,14 @@ class FrontEnd(object):
         """
 
         try:
-            time_trigger_omg = long(10000000 * property_attributes.get(
+            time_trigger_omg = int(10000000 * property_attributes.get(
                 "default_timer_trig"))
 
         except Exception:
             self.logger.logDebug(
                 "no time trigger found in the CDB, "
                 "using the default value")
-            time_trigger_omg = long(
+            time_trigger_omg = int(
                 10000000 * self.recorder_config.default_timer_trigger)
 
         # This can rise a UnsupporterPropertyTypeError
