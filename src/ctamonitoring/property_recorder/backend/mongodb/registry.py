@@ -479,7 +479,7 @@ class Registry(ctamonitoring.property_recorder.backend.dummy.registry.Registry):
             self._workers.append(worker)
 
     def _check_name(self, name, description):
-        if not isinstance(name, basestring):
+        if not isinstance(name, str):
             raise TypeError("check " + description)
         if not name:
             raise ValueError("check " + description)
