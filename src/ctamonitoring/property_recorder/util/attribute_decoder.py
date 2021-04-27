@@ -67,7 +67,7 @@ def _decode_utf8(value):
     Returns a Unicode object on success, or None on failure
     """
     try:
-        return value.decode('utf-8')
+        return value if not isinstance(value, bytes) else value.decode('utf-8', 'ignore')
     except UnicodeDecodeError:
         return None
 
