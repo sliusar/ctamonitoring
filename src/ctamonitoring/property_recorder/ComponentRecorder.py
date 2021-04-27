@@ -222,7 +222,7 @@ class RecorderConfigDecoder(object):
             recorder_config.backend_type = enum_util.from_string(
                 BACKEND_TYPE,
                 componentCDB.firstChild.getAttribute(
-                    "backend").decode()
+                    "backend")
                 )
         except Exception as e:
             raise BadCdbRecorderConfig(e, "backend")
@@ -230,7 +230,7 @@ class RecorderConfigDecoder(object):
         try:
             recorder_config.backend_config = ast.literal_eval(
                 componentCDB.firstChild.getAttribute(
-                    "backend_config").decode())
+                    "backend_config"))
         except Exception as e:
             raise BadCdbRecorderConfig(e, "backend_config")
 
@@ -266,7 +266,7 @@ class RecorderConfigDecoder(object):
                 "component_list")
             recorder_config.set_components(set(
                 ast.literal_eval(componentCDB.firstChild.getAttribute(
-                    "component_list").decode()
+                    "component_list")
                 )))
         except Exception as e:
             raise BadCdbRecorderConfig(e, "component_list")
