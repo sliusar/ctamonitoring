@@ -829,7 +829,7 @@ class FrontEnd(object):
 
         # loop over the componentMap
         # for comp_name, comp_info in self.__components().iteritems():
-        for comp_name in self._components.keys():
+        for comp_name in [i for i in self._components.keys()]:
             self.logger.logDebug("deactivating component: " + comp_name)
             try:
                 self._release_component(comp_name)
